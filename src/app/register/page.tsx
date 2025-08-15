@@ -1,57 +1,30 @@
 "use client";
 import { useState } from "react";
+import { register } from "@/services/auth";
 import { useRouter } from "next/navigation";
-import { register as registerUser } from "@/services/auth";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleRegister = async () => {
-    if (!username || !email || !password) {
-      alert("Veuillez remplir tous les champs ❌");
-      return;
-    }
-
-    const data = await registerUser(username, email, password);
-    if (data.jwt) {
-      alert("Inscription réussie ✅");
-      router.push("/login"); // redirection vers login
-    } else {
-      alert(data.error?.message || "Erreur lors de l'inscription ❌");
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = await register(username, email, password);
+    localStorage.setItem("token", data.jwt);
+    router.push("/tasks");
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow p-4" style={{ width: "400px" }}>
-        <h2 className="text-center mb-4">Créer un compte</h2>
-        <input
-          className="form-control mb-3"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Nom d'utilisateur"
-        />
-        <input
-          className="form-control mb-3"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Adresse email"
-        />
-        <input
-          className="form-control mb-3"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Mot de passe"
-        />
-        <button className="btn btn-success w-100" onClick={handleRegister}>
-          S'inscrire
-        </button>
-      </div>
+    <div className="container mt-5">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <input className="form-control mb-2" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="email" className="form-control mb-2" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="password" className="form-control mb-2" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <button className="btn btn-success w-100">Register</button>
+      </form>
     </div>
   );
 }

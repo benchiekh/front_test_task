@@ -1,56 +1,88 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getTasks, createTask } from "@/services/tasks";
+import { getTasks, createTask, deleteTask, updateTask } from "@/services/tasks";
+import Header from "@/components/Header";
+import TaskCard from "@/components/TaskCard";
+import Stats from "@/components/Stats";
+import TaskForm from "@/components/TaskForm";
+import Footer from "@/components/Footer";
 
 export default function TasksPage() {
-  const router = useRouter();
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [newTask, setNewTask] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [editingTask, setEditingTask] = useState(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const fetchTasks = async () => {
+    try {
+      const data = await getTasks();
+      setTasks(data.map((item) => ({ id: item.id,  documentId: item.documentId, // UID utilisé pour update/delete
+ ...item })));
+    } catch (error) {
+      console.error("Erreur fetchTasks:", error);
+      setTasks([]);
+    }
+  };
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-    loadTasks();
+    fetchTasks();
   }, []);
 
-  const loadTasks = async () => {
-    const data = await getTasks(token!);
-    setTasks(data.data || []);
+ const handleAddTask = async (task) => {
+  try {
+    if (editingTask) {
+      await updateTask(editingTask.documentId, task); // ✅ utiliser documentId
+      setEditingTask(null);
+      setTasks(prev => prev.map(t => t.documentId === editingTask.documentId ? { ...t, ...task } : t
+      ));
+    } else {
+      const newTask = await createTask(task);
+      fetchTasks();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleDeleteTask = async (documentId) => {
+  try {
+    await deleteTask(documentId);
+    setTasks(prev => prev.filter(t => t.documentId !== documentId));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+  const handleEditTask = (task) => {
+    setEditingTask(task);
   };
 
-  const handleAddTask = async () => {
-    if (!newTask.trim()) return;
-    await createTask(token!, newTask);
-    setNewTask("");
-    loadTasks();
-  };
+  const cancelEdit = () => setEditingTask(null);
+
+  const completed = tasks.filter((t) => t.taskStatus === "completed").length;
+  const pending = tasks.filter((t) => t.taskStatus === "pending").length;
 
   return (
-    <div className="container py-4">
-      <h1 className="mb-4">📋 Mes tâches</h1>
-      <div className="input-group mb-3">
-        <input
-          className="form-control"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Nouvelle tâche"
+    <>
+      <Header userName="Aqeel" />
+      <div className="container">
+        <Stats completed={completed} pending={pending} total={tasks.length} />
+        <TaskForm
+          onSubmit={handleAddTask}
+          editingTask={editingTask}
+          onCancelEdit={cancelEdit}
         />
-        <button className="btn btn-success" onClick={handleAddTask}>
-          Ajouter
-        </button>
+        <div className="mt-3">
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onDelete={() => handleDeleteTask(task.documentId)}
+              onEdit={() => handleEditTask(task)}
+            />
+          ))}
+        </div>
       </div>
-      <ul className="list-group">
-        {tasks.map((task) => (
-          <li key={task.id} className="list-group-item">
-            {task.attributes?.title || "Sans titre"}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <Footer />
+    </>
   );
 }

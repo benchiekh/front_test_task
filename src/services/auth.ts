@@ -1,19 +1,12 @@
-import { API_URL } from "./config";
+// auth.ts
+import { api } from "./config";
 
 export async function login(identifier: string, password: string) {
-  const res = await fetch(`${API_URL}/api/auth/local`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ identifier, password }),
-  });
-  return res.json();
+  const res = await api.post("/auth/local", { identifier, password });
+  return res.data;
 }
 
 export async function register(username: string, email: string, password: string) {
-  const res = await fetch(`${API_URL}/api/auth/local/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email, password }),
-  });
-  return res.json();
+  const res = await api.post("/auth/local/register", { username, email, password });
+  return res.data;
 }
