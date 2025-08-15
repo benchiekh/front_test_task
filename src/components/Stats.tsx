@@ -1,18 +1,33 @@
+import styles from "./Stats.module.css";
+
 export default function Stats({ completed, pending, total }) {
   return (
-    <div className="d-flex justify-content-around py-3">
-      <div className="text-center">
-        <h4 className="text-success">{completed}</h4>
-        <small>Completed Tasks</small>
+    <section className={styles.container}>
+      {/* Completed Tasks */}
+      <div className={`${styles.tile} ${styles.completed}`}>
+           <div className={styles.label}>Completed Tasks</div>
+        <div className={styles.count}>{completed ?? 0}</div>
+     
       </div>
-      <div className="text-center">
-        <h4 className="text-danger">{pending}</h4>
-        <small>Pending Tasks</small>
+
+      {/* Pending Tasks */}
+      <div className={`${styles.tile} ${styles.pending}`}>
+         <div className={styles.label}>Pending Tasks</div>
+        <div className={styles.count}>{pending ?? 0}</div>
+       
       </div>
-      <div className="text-center">
-        <h4>{total}</h4>
-        <small>Tasks Created</small>
-      </div>
-    </div>
+
+      {/* Task Created */}
+  <div className={styles.taskCreated}>
+  <div className={styles.label}>Tasks Created</div>
+  <div className={styles.count}>
+    {typeof total === "number" ? total.toLocaleString() : total ?? 0}
+  </div>
+ 
+
+
+</div>
+
+    </section>
   );
 }

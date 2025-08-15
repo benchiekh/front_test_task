@@ -1,0 +1,94 @@
+/* Footer général */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f9f4f4;
+  padding: 12px 20px;
+  position: relative;
+  font-family: sans-serif;
+}
+
+/* Logo Todo List */
+.leftGroup {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 12px;
+}
+
+/* Cercle semi-transparent derrière */
+.ellipse1 {
+  position: absolute;
+  width: 27.73px;
+  height: 27.73px;
+  top: -4px;
+  left: 0;
+  background-color: #F8777780;
+  border-radius: 50%;
+}
+
+/* Cercle rouge au-dessus */
+.ellipse2 {
+  position: absolute;
+  width: 27.73px;
+  height: 27.73px;
+  top: -1px;
+  left: 3px;
+  background-color: #F87777;
+  border-radius: 50%;
+}
+
+/* Lettre T */
+.logoCircle {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-family: "Island Moments", cursive;
+  font-weight: 400;
+  color: #0D0D0C;
+  background: transparent;
+}
+
+/* Texte Todo List */
+.title {
+  font-size: 29.58px;
+  font-weight: 400;
+  color: #000;
+  line-height: 100%;
+}
+
+/* Copyright */
+.copy {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Icônes sociales */
+.socialIcons {
+  display: flex;
+  gap: 8px;
+}
+
+.socialIcons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  color: #333;
+  text-decoration: none;
+  font-size: 12px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.socialIcons a:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}

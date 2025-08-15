@@ -1,0 +1,70 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #F2EAEA;
+  height: 40px;
+  padding: 3px 15px;
+  box-shadow: 0px 4px 12.3px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+/* Texte Todo List */
+.title {
+  font-size: 29.58px;
+  font-weight: 400;
+  color: #000;
+  line-height: 100%;
+}
+
+/* Groupe gauche */
+.leftGroup {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0; /* cercles superposés */
+}
+
+/* Cercle semi-transparent derrière */
+.ellipse1 {
+  position: absolute;
+  width: 27.73px;
+  height: 27.73px;
+  top: 3px;
+  left: 0;
+  background-color: #F8777780;
+  border-radius: 50%;
+}
+
+/* Cercle rouge au-dessus */
+.ellipse2 {
+  position: absolute;
+  width: 27.73px;
+  height: 27.73px;
+  top: 6px;
+  left: 3px;
+  background-color: #F87777;
+  border-radius: 50%;
+}
+
+/* Lettre initiale */
+.logoCircle {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #0D0D0C;
+  background: transparent;
+  font-family: "Island Moments", cursive;
+}
+
+/* Avatar */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}

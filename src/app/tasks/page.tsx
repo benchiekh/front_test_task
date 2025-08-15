@@ -1,21 +1,39 @@
 "use client";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { getTasks, createTask, deleteTask, updateTask } from "@/services/tasks";
 import Header from "@/components/Header";
 import TaskCard from "@/components/TaskCard";
 import Stats from "@/components/Stats";
 import TaskForm from "@/components/TaskForm";
 import Footer from "@/components/Footer";
+import DashboardHeader from "@/components/DashboardHeader";
+import styles from "./TasksPage.module.css";
+
+// React Calendar rendu seulement côté client
+const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
+import "react-calendar/dist/Calendar.css";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [calendarDate, setCalendarDate] = useState(null);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [priorityAsc, setPriorityAsc] = useState(true);
+  const [categoryAsc, setCategoryAsc] = useState(true);
 
+  // Récupération des tasks
   const fetchTasks = async () => {
     try {
       const data = await getTasks();
-      setTasks(data.map((item) => ({ id: item.id,  documentId: item.documentId, // UID utilisé pour update/delete
- ...item })));
+      setTasks(
+        data.map((item) => ({
+          id: item.id,
+          documentId: item.documentId,
+          ...item,
+        }))
+      );
     } catch (error) {
       console.error("Erreur fetchTasks:", error);
       setTasks([]);
@@ -26,62 +44,166 @@ export default function TasksPage() {
     fetchTasks();
   }, []);
 
- const handleAddTask = async (task) => {
-  try {
-    if (editingTask) {
-      await updateTask(editingTask.documentId, task); // ✅ utiliser documentId
-      setEditingTask(null);
-      setTasks(prev => prev.map(t => t.documentId === editingTask.documentId ? { ...t, ...task } : t
-      ));
-    } else {
-      const newTask = await createTask(task);
-      fetchTasks();
+  // Filtrage côté client
+  useEffect(() => {
+    setFilteredTasks(
+      tasks.filter((task) => {
+        const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesDate = calendarDate
+          ? task.dueDate?.slice(0, 10) === calendarDate.toISOString().slice(0, 10)
+          : true;
+        return matchesSearch && matchesDate;
+      })
+    );
+  }, [tasks, searchTerm, calendarDate]);
+
+  // Ajouter / Modifier task
+  const handleAddTask = async (task) => {
+    try {
+      if (editingTask) {
+        await updateTask(editingTask.documentId, task);
+        setEditingTask(null);
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.documentId === editingTask.documentId ? { ...t, ...task } : t
+          )
+        );
+      } else {
+        await createTask(task);
+        fetchTasks();
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const handleDeleteTask = async (documentId) => {
-  try {
-    await deleteTask(documentId);
-    setTasks(prev => prev.filter(t => t.documentId !== documentId));
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-
-  const handleEditTask = (task) => {
-    setEditingTask(task);
   };
 
+  const handleDeleteTask = async (documentId) => {
+    try {
+      await deleteTask(documentId);
+      setTasks((prev) => prev.filter((t) => t.documentId !== documentId));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEditTask = (task) => setEditingTask(task);
   const cancelEdit = () => setEditingTask(null);
+
+  // Tri par priorité
+  const handleSortByPriority = (asc = true) => {
+    setPriorityAsc(asc);
+    setTasks((prev) =>
+      [...prev].sort((a, b) => {
+        const priorities = { high: 3, medium: 2, low: 1 };
+        return asc
+          ? priorities[a.priority] - priorities[b.priority]
+          : priorities[b.priority] - priorities[a.priority];
+      })
+    );
+  };
+
+  // Tri par catégorie (taskStatus)
+  const handleSortByCategory = (asc = true) => {
+    setCategoryAsc(asc);
+    setTasks((prev) =>
+      [...prev].sort((a, b) => {
+        const order = { pending: 1, completed: 2 };
+        return asc
+          ? order[a.taskStatus] - order[b.taskStatus]
+          : order[b.taskStatus] - order[a.taskStatus];
+      })
+    );
+  };
 
   const completed = tasks.filter((t) => t.taskStatus === "completed").length;
   const pending = tasks.filter((t) => t.taskStatus === "pending").length;
 
   return (
     <>
-      <Header userName="Aqeel" />
+      <Header
+        userName="Iheb"
+        profileImage="https://i.pravatar.cc/150?img=3"
+      />
+
       <div className="container">
-        <Stats completed={completed} pending={pending} total={tasks.length} />
+        <DashboardHeader name="Aqeel" />
+
         <TaskForm
           onSubmit={handleAddTask}
           editingTask={editingTask}
           onCancelEdit={cancelEdit}
         />
-        <div className="mt-3">
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onDelete={() => handleDeleteTask(task.documentId)}
-              onEdit={() => handleEditTask(task)}
-            />
-          ))}
+
+ <div className={styles.controls}>
+  
+
+    <div className={styles.sortBtnsContainer}>
+      <button
+        onClick={() => handleSortByCategory(!categoryAsc)}
+        className={styles.smallBtn}
+      >
+        By Category {categoryAsc ? "▲" : "▼"}
+      </button>
+
+      <button
+        onClick={() => handleSortByPriority(!priorityAsc)}
+        className={styles.smallBtn}
+      >
+        By Priority {priorityAsc ? "▲" : "▼"}
+      </button>
+      <div className={styles.rightGroup}>
+    <input
+      type="text"
+      placeholder="Search by title..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className={styles.searchInput}
+    />
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+        <div className={styles.mainGrid}>
+          {/* Calendrier à gauche */}
+          <div className={styles.calendarSection}>
+            <div className={styles.calendarHeader}>
+              {calendarDate
+                ? calendarDate.toLocaleDateString("en-US", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : new Date().toLocaleDateString("en-US", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+            </div>
+            <Calendar onChange={setCalendarDate} value={calendarDate} />
+          </div>
+
+          {/* Cards à droite */}
+          <div className={styles.cardsSection}>
+            <div className={styles.grid}>
+              {filteredTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onDelete={() => handleDeleteTask(task.documentId)}
+                  onEdit={() => handleEditTask(task)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      <Stats completed={completed} pending={pending} total={tasks.length} />
       <Footer />
     </>
   );

@@ -1,0 +1,75 @@
+.card {
+  background: #F0D1A8;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 320px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #0A3D62; /* bleu clair */
+  margin: 0;
+}
+
+.actions button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 6px;
+}
+
+.editBtn { color: #1f9d55; }
+.deleteBtn { color: #b45309; }
+
+.description {
+  font-size: 14px;
+  color: #0A3D62;
+  margin: 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+
+.meta dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.meta dd {
+  font-weight: 600;
+  margin: 2px 0 0;
+}
+
+.good { color: #1f9d55; }
+.bad  { color: #b45309; }
+
+.priority { text-transform: capitalize; }

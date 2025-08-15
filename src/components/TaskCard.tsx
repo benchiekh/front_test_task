@@ -1,21 +1,44 @@
+import styles from "./TaskCard.module.css";
+
 export default function TaskCard({ task, onDelete, onEdit }) {
   return (
-    <div className="card p-4 mb-3 shadow-sm">
-      <h3 className="font-bold text-lg">{task.title}</h3>
-      <p>{task.description}</p>
-      <p>Status: {task.taskStatus}</p>
-      <p>Début: {task.createdAt?.slice(0, 10)}</p>
-      <p>Fin: {task.dueDate?.slice(0, 10)}</p>
-      <p>Priority: {task.priority}</p>
-      <div className="mt-2 flex gap-2">
-      <button onClick={() => onDelete(task.documentId)} className="btn btn-sm btn-danger">
-  Delete
-</button>
-<button onClick={() => onEdit(task)} className="btn btn-sm btn-primary">
-  Edit
-</button>
+    <article className={styles.card}>
+      <header className={styles.header}>
+        <h3 className={styles.title}>{task.title}</h3>
+        <div className={styles.actions}>
+          <button onClick={() => onEdit(task)} className={styles.editBtn}>
+            ✏️
+          </button>
+          <button onClick={() => onDelete(task.documentId)} className={styles.deleteBtn}>
+            🗑️
+          </button>
+        </div>
+      </header>
 
-      </div>
-    </div>
+      {task.description && (
+        <p className={styles.description}>{task.description}</p>
+      )}
+
+      <dl className={styles.meta}>
+        <div>
+          <dt>Status</dt>
+          <dd className={task.taskStatus === "completed" ? styles.good : styles.bad}>
+            {task.taskStatus}
+          </dd>
+        </div>
+        <div>
+          <dt>Start</dt>
+          <dd>{task.createdAt?.slice(0, 10) || "—"}</dd>
+        </div>
+        <div>
+          <dt>Due</dt>
+          <dd>{task.dueDate?.slice(0, 10) || "—"}</dd>
+        </div>
+        <div>
+          <dt>Priority</dt>
+          <dd className={styles.priority}>{task.priority}</dd>
+        </div>
+      </dl>
+    </article>
   );
 }

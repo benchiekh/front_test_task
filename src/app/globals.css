@@ -3,6 +3,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Ajout des variables figma */
+  --bg: #f7f4ef;
+  --card: #ffffff;
+  --ink: #2e2e2e;
+  --muted: #8b8b8b;
+  --accent: #22c55e; /* vert bouton add */
+  --accent-ink: #0a3820;
+  --stroke: rgba(177, 177, 177, 0.4);
+  --radius-card: 10px;
+  --radius-pill: 12px;
+  --shadow: 0 6px 24px rgba(0,0,0,.06);
 }
 
 @theme inline {
@@ -16,6 +28,12 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    /* Variante dark si tu veux */
+    --bg: #0a0a0a;
+    --card: #171717;
+    --ink: #ededed;
+    --muted: #a1a1a1;
   }
 }
 
@@ -23,4 +41,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --bg: #f7f4ef;
+  --card: #ffffff;
+  --ink: #2e2e2e;
+  --muted: #8b8b8b;
+  --accent: #22c55e;
+  --accent-ink: #0a3820;
+  --stroke: rgba(177, 177, 177, 0.4);
+  --radius-card: 10px;
+  --radius-pill: 12px;
+  --shadow: 0 6px 24px rgba(0,0,0,.06);
 }

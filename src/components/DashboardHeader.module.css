@@ -1,0 +1,26 @@
+.header {
+  margin-top: 40px; /* espace en haut */
+  margin-bottom: 40px; /* espace en bas */
+  text-align: center; /* centre horizontalement */
+  display: flex;
+  justify-content: center; /* espace horizontal centré */
+  align-items: center; /* aligne verticalement */
+  gap: 10px; /* espace entre le titre et le sous-texte */
+}
+
+.heroTitle {
+  font-family: "Roboto Flex", system-ui, Segoe UI, Roboto, Arial;
+  font-weight: 600; 
+  font-size: 22.24px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 0; /* supprime marges par défaut */
+}
+
+.sub {
+  font-weight: 400;
+  color: var(--muted);
+  display: inline-block; /* sur la même ligne que le titre */
+  margin: 0; /* supprime marges par défaut */
+}
