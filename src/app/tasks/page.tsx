@@ -40,12 +40,15 @@ export default function TasksPage() {
   const [priorityAsc, setPriorityAsc] = useState(true);
   const [categoryAsc, setCategoryAsc] = useState(true);
 
-
+ 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleCalendarChange = (value: any) => {
   if (!value) return;
-  if (Array.isArray(value)) setCalendarDate(value[0] as Date);  
-  else setCalendarDate(value as Date);
+  if (Array.isArray(value)) setCalendarDate(value[0]);
+  else setCalendarDate(value);
 };
+
+
 
   // Récupération des tasks
   const fetchTasks = async () => {
@@ -190,7 +193,11 @@ const handleCalendarChange = (value: any) => {
                     year: "numeric",
                   })}
             </div>
-<Calendar onChange={handleCalendarChange} value={calendarDate} />
+<Calendar
+  onChange={handleCalendarChange}
+  value={calendarDate}
+/>
+
 
 
           </div>
