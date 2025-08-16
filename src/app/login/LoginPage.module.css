@@ -1,0 +1,50 @@
+/* src/app/LoginPage.css */
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0f0ff, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  background-color: rgba(255,255,255,0.95);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-card h2 {
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #2575fc;
+}
+
+.login-card .form-control {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1.5px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.login-card .form-control:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+}
+
+.login-card .btn-primary {
+  border-radius: 10px;
+  padding: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-card .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+}
