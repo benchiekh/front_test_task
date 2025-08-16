@@ -19,14 +19,15 @@ export type Task = {
   id: string;
   documentId: string;
   title: string;
-  description: string;
+  description?: string;
   taskStatus: "pending" | "completed";
   dueDate: string;
+  createdAt?: string;
   completedAt?: string;
   priority: "low" | "medium" | "high";
 };
 
-export type TaskInput = Omit<Task, "id" | "documentId">;
+export type TaskInput = Omit<Task, "id" | "documentId" | "createdAt" | "completedAt">;
 
 // -------------------
 
@@ -34,7 +35,7 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [calendarDate, setCalendarDate] = useState<Date | null>(null);
+  const [calendarDate, setCalendarDate] = useState<Date | null>(new Date());
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [priorityAsc, setPriorityAsc] = useState(true);
   const [categoryAsc, setCategoryAsc] = useState(true);
@@ -182,7 +183,16 @@ export default function TasksPage() {
                     year: "numeric",
                   })}
             </div>
-            <Calendar onChange={setCalendarDate} value={calendarDate} />
+            <Calendar
+              onChange={(value: Date | Date[]) => {
+                if (Array.isArray(value)) {
+                  setCalendarDate(value[0]); 
+                } else {
+                  setCalendarDate(value);
+                }
+              }}
+              value={calendarDate}
+            />
           </div>
 
           <div className={styles.cardsSection}>
