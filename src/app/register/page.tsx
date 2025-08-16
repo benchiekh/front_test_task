@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = await register(username, email, password);
     localStorage.setItem("token", data.jwt);

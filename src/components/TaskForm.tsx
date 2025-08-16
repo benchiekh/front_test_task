@@ -20,7 +20,7 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit }) {
     }
   }, [editingTask]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit({ title, description, taskStatus, dueDate, priority });
   };
