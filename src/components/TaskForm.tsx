@@ -11,10 +11,10 @@ type TaskFormProps = {
 export default function TaskForm({ onSubmit, editingTask, onCancelEdit }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [taskStatus, setTaskStatus] = useState("pending");
+const [taskStatus, setTaskStatus] = useState<"pending" | "completed">("pending");
+const [priority, setPriority] = useState<"low" | "medium" | "high">("low");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("low");
-
+ 
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title || "");
@@ -50,15 +50,21 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit }: TaskFo
           placeholder="Task Description"
           className={styles.input}
         />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} className={styles.input}>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-        <select value={taskStatus} onChange={(e) => setTaskStatus(e.target.value)} className={styles.input}>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-        </select>
+     <select
+  value={priority}
+  onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
+>
+  <option value="low">Low</option>
+  <option value="medium">Medium</option>
+  <option value="high">High</option>
+</select>
+   <select
+  value={taskStatus}
+  onChange={(e) => setTaskStatus(e.target.value as "pending" | "completed")}
+>
+  <option value="pending">Pending</option>
+  <option value="completed">Completed</option>
+</select>
         <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={styles.input}/>
         <button type="submit" className={styles.submitBtn}>
           {editingTask ? "Update Task" : "Add Task"}
