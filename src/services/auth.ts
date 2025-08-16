@@ -1,17 +1,21 @@
 import { api } from "./config";
 
-// Login
 export async function login(identifier: string, password: string) {
-   
-    const res = await api.post("/api/auth/local", { identifier, password });
-    return res.data; // { jwt, user }
-  
+  try {
+    const res = await api.post("/auth/local", { identifier, password });
+    return res.data; // jwt + user
+  } catch (err: any) {
+    console.error("❌ Login error:", err.response?.data || err.message);
+    return { error: err.response?.data };
+  }
 }
 
-// Register
 export async function register(username: string, email: string, password: string) {
-  
-    const res = await api.post("/api/auth/local/register", { username, email, password });
-    return res.data; // { jwt, user }
- 
+  try {
+    const res = await api.post("/auth/local/register", { username, email, password });
+    return res.data; // jwt + user
+  } catch (err: any) {
+    console.error("❌ Register error:", err.response?.data || err.message);
+    return { error: err.response?.data };
+  }
 }

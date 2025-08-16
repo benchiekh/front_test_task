@@ -1,47 +1,44 @@
 // src/services/tasks.ts
 import { api } from "./config";
 import { Task, TaskInput } from "@/app/tasks/page";
-
-// Récupérer toutes les tâches
+ 
+ 
 export const getTasks = async (): Promise<Task[]> => {
   try {
-    const res = await api.get("/api/tasks");
-    return Array.isArray(res.data.data) ? res.data.data : [];
-  } catch (error) {
-    console.error("Erreur getTasks:", error);
+    const res = await api.get("/tasks");
+    return res.data.data || [];
+  } catch (err) {
+    console.error("Erreur getTasks:", err);
     return [];
   }
 };
 
-// Créer une nouvelle tâche
 export const createTask = async (task: TaskInput): Promise<Task> => {
   try {
-    const res = await api.post("/api/tasks", { data: task });
+    const res = await api.post("/tasks", { data: task });
     return res.data.data;
-  } catch (error) {
-    console.error("Erreur createTask:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erreur createTask:", err);
+    throw err;
   }
 };
 
-// Supprimer une tâche
-export const deleteTask = async (documentId: string): Promise<{ success: boolean }> => {
+export const updateTask = async (id: string, task: TaskInput): Promise<Task> => {
   try {
-    const res = await api.delete(`/api/tasks/${documentId}`);
-    return { success: res.status === 200 };
-  } catch (error) {
-    console.error("Erreur deleteTask:", error);
-    throw error;
+    const res = await api.put(`/tasks/${id}`, { data: task });
+    return res.data.data;
+  } catch (err) {
+    console.error("Erreur updateTask:", err);
+    throw err;
   }
 };
 
-// Mettre à jour une tâche existante
-export const updateTask = async (documentId: string, updatedTask: TaskInput): Promise<Task> => {
+export const deleteTask = async (id: string): Promise<{ success: boolean }> => {
   try {
-    const res = await api.put(`/api/tasks/${documentId}`, { data: updatedTask });
-    return res.data.data;
-  } catch (error) {
-    console.error("Erreur updateTask:", error);
-    throw error;
+    const res = await api.delete(`/tasks/${id}`);
+    return res.data;
+  } catch (err) {
+    console.error("Erreur deleteTask:", err);
+    throw err;
   }
 };
