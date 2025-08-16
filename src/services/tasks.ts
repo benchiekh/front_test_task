@@ -1,7 +1,9 @@
+// src/services/tasks.ts
 import { api } from "./config";
+import { Task, TaskInput } from "@/app/tasks/page";
 
 // Récupérer toutes les tâches
-export const getTasks = async () => {
+export const getTasks = async (): Promise<Task[]> => {
   try {
     const res = await api.get("/tasks");
     return Array.isArray(res.data.data) ? res.data.data : [];
@@ -12,7 +14,7 @@ export const getTasks = async () => {
 };
 
 // Créer une nouvelle tâche
-export const createTask = async (task) => {
+export const createTask = async (task: TaskInput): Promise<Task> => {
   try {
     const res = await api.post("/tasks", { data: task });
     return res.data.data;
@@ -23,7 +25,7 @@ export const createTask = async (task) => {
 };
 
 // Supprimer une tâche
-export const deleteTask = async (documentId) => {
+export const deleteTask = async (documentId: string): Promise<{ success: boolean }> => {
   try {
     const res = await api.delete(`/tasks/${documentId}`);
     return res.data;
@@ -34,7 +36,7 @@ export const deleteTask = async (documentId) => {
 };
 
 // Mettre à jour une tâche existante
-export const updateTask = async (documentId, updatedTask) => {
+export const updateTask = async (documentId: string, updatedTask: TaskInput): Promise<Task> => {
   try {
     const res = await api.put(`/tasks/${documentId}`, { data: updatedTask });
     return res.data.data;
@@ -43,4 +45,3 @@ export const updateTask = async (documentId, updatedTask) => {
     throw error;
   }
 };
-
