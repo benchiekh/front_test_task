@@ -40,6 +40,13 @@ export default function TasksPage() {
   const [priorityAsc, setPriorityAsc] = useState(true);
   const [categoryAsc, setCategoryAsc] = useState(true);
 
+
+const handleCalendarChange = (value: any) => {
+  if (!value) return;
+  if (Array.isArray(value)) setCalendarDate(value[0] as Date);  
+  else setCalendarDate(value as Date);
+};
+
   // Récupération des tasks
   const fetchTasks = async () => {
     try {
@@ -183,16 +190,9 @@ export default function TasksPage() {
                     year: "numeric",
                   })}
             </div>
-            <Calendar
-              onChange={(value: Date | Date[]) => {
-                if (Array.isArray(value)) {
-                  setCalendarDate(value[0]); 
-                } else {
-                  setCalendarDate(value);
-                }
-              }}
-              value={calendarDate}
-            />
+<Calendar onChange={handleCalendarChange} value={calendarDate} />
+
+
           </div>
 
           <div className={styles.cardsSection}>
