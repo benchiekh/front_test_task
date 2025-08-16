@@ -11,24 +11,22 @@ import Footer from "@/components/Footer";
 import DashboardHeader from "@/components/DashboardHeader";
 import styles from "./TasksPage.module.css";
 
-// React Calendar rendu seulement côté client
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 import "react-calendar/dist/Calendar.css";
 
 // ---- Types ----
-type Task = {
+export type Task = {
   id: string;
   documentId: string;
   title: string;
-  description?: string;
+  description: string;
   taskStatus: "pending" | "completed";
-  dueDate?: string;
+  dueDate: string;
   completedAt?: string;
   priority: "low" | "medium" | "high";
-  [key: string]: any; // أي حقل إضافي
 };
 
-type TaskInput = Omit<Task, "id" | "documentId">;
+export type TaskInput = Omit<Task, "id" | "documentId">;
 
 // -------------------
 
@@ -45,11 +43,7 @@ export default function TasksPage() {
   const fetchTasks = async () => {
     try {
       const data: Task[] = await getTasks();
-      setTasks(
-        data.map((item) => ({
-          ...item,
-        }))
-      );
+      setTasks(data);
     } catch (error) {
       console.error("Erreur fetchTasks:", error);
       setTasks([]);
@@ -66,7 +60,7 @@ export default function TasksPage() {
       tasks.filter((task) => {
         const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesDate = calendarDate
-          ? task.dueDate?.slice(0, 10) === calendarDate.toISOString().slice(0, 10)
+          ? task.dueDate.slice(0, 10) === calendarDate.toISOString().slice(0, 10)
           : true;
         return matchesSearch && matchesDate;
       })
@@ -105,7 +99,6 @@ export default function TasksPage() {
   const handleEditTask = (task: Task) => setEditingTask(task);
   const cancelEdit = () => setEditingTask(null);
 
-  // Tri par priorité
   const handleSortByPriority = (asc: boolean = true) => {
     setPriorityAsc(asc);
     setTasks((prev) =>
@@ -118,7 +111,6 @@ export default function TasksPage() {
     );
   };
 
-  // Tri par catégorie (taskStatus)
   const handleSortByCategory = (asc: boolean = true) => {
     setCategoryAsc(asc);
     setTasks((prev) =>
@@ -176,7 +168,6 @@ export default function TasksPage() {
         </div>
 
         <div className={styles.mainGrid}>
-          {/* Calendrier à gauche */}
           <div className={styles.calendarSection}>
             <div className={styles.calendarHeader}>
               {calendarDate
@@ -194,7 +185,6 @@ export default function TasksPage() {
             <Calendar onChange={setCalendarDate} value={calendarDate} />
           </div>
 
-          {/* Cards à droite */}
           <div className={styles.cardsSection}>
             <div className={styles.grid}>
               {filteredTasks.map((task) => (

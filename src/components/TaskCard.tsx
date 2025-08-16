@@ -1,6 +1,12 @@
 import styles from "./TaskCard.module.css";
+import { Task } from "@/app/tasks/page"; // import type Task
 
-export default function TaskCard({ task, onDelete, onEdit }) {
+type TaskCardProps = {
+  task: Task;
+  onDelete: (documentId: string) => void;
+  onEdit: (task: Task) => void;
+};
+export default function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
   return (
     <article className={styles.card}>
       <header className={styles.header}>

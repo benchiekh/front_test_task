@@ -1,6 +1,10 @@
 import styles from "./Stats.module.css";
-
-export default function Stats({ completed, pending, total }) {
+type StatsProps = {
+  completed: number;
+  pending: number;
+  total: number;
+};
+export default function Stats({ completed, pending, total }: StatsProps) {
   return (
     <section className={styles.container}>
       {/* Completed Tasks */}

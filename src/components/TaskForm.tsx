@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import styles from "./TaskForm.module.css";
+import { TaskInput, Task } from "@/app/tasks/page";
 
-export default function TaskForm({ onSubmit, editingTask, onCancelEdit }) {
+type TaskFormProps = {
+  onSubmit: (task: TaskInput) => void;
+  editingTask: Task | null;
+  onCancelEdit: () => void;
+};
+
+export default function TaskForm({ onSubmit, editingTask, onCancelEdit }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [taskStatus, setTaskStatus] = useState("pending");

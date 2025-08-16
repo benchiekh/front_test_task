@@ -1,6 +1,12 @@
+
 import styles from "./DashboardHeader.module.css";
 
-export default function DashboardHeader({ name }) {
+
+type DashboardHeaderProps = {
+  name: string;
+};
+
+export default function DashboardHeader({ name }: DashboardHeaderProps) {
   return (
     <header className={styles.header}>
       <h1 className={styles.heroTitle}>
