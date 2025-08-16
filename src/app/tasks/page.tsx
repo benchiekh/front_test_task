@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { getTasks, createTask, deleteTask, updateTask } from "@/services/tasks";
 import Header from "@/components/Header";
@@ -14,23 +15,38 @@ import styles from "./TasksPage.module.css";
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 import "react-calendar/dist/Calendar.css";
 
+// ---- Types ----
+type Task = {
+  id: string;
+  documentId: string;
+  title: string;
+  description?: string;
+  taskStatus: "pending" | "completed";
+  dueDate?: string;
+  completedAt?: string;
+  priority: "low" | "medium" | "high";
+  [key: string]: any; // أي حقل إضافي
+};
+
+type TaskInput = Omit<Task, "id" | "documentId">;
+
+// -------------------
+
 export default function TasksPage() {
-  const [tasks, setTasks] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [calendarDate, setCalendarDate] = useState(null);
-  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [calendarDate, setCalendarDate] = useState<Date | null>(null);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [priorityAsc, setPriorityAsc] = useState(true);
   const [categoryAsc, setCategoryAsc] = useState(true);
 
   // Récupération des tasks
   const fetchTasks = async () => {
     try {
-      const data = await getTasks();
+      const data: Task[] = await getTasks();
       setTasks(
         data.map((item) => ({
-          id: item.id,
-          documentId: item.documentId,
           ...item,
         }))
       );
@@ -58,7 +74,7 @@ export default function TasksPage() {
   }, [tasks, searchTerm, calendarDate]);
 
   // Ajouter / Modifier task
-  const handleAddTask = async (task) => {
+  const handleAddTask = async (task: TaskInput) => {
     try {
       if (editingTask) {
         await updateTask(editingTask.documentId, task);
@@ -77,7 +93,7 @@ export default function TasksPage() {
     }
   };
 
-  const handleDeleteTask = async (documentId) => {
+  const handleDeleteTask = async (documentId: string) => {
     try {
       await deleteTask(documentId);
       setTasks((prev) => prev.filter((t) => t.documentId !== documentId));
@@ -86,15 +102,15 @@ export default function TasksPage() {
     }
   };
 
-  const handleEditTask = (task) => setEditingTask(task);
+  const handleEditTask = (task: Task) => setEditingTask(task);
   const cancelEdit = () => setEditingTask(null);
 
   // Tri par priorité
-  const handleSortByPriority = (asc = true) => {
+  const handleSortByPriority = (asc: boolean = true) => {
     setPriorityAsc(asc);
     setTasks((prev) =>
       [...prev].sort((a, b) => {
-        const priorities = { high: 3, medium: 2, low: 1 };
+        const priorities: Record<string, number> = { high: 3, medium: 2, low: 1 };
         return asc
           ? priorities[a.priority] - priorities[b.priority]
           : priorities[b.priority] - priorities[a.priority];
@@ -103,11 +119,11 @@ export default function TasksPage() {
   };
 
   // Tri par catégorie (taskStatus)
-  const handleSortByCategory = (asc = true) => {
+  const handleSortByCategory = (asc: boolean = true) => {
     setCategoryAsc(asc);
     setTasks((prev) =>
       [...prev].sort((a, b) => {
-        const order = { pending: 1, completed: 2 };
+        const order: Record<string, number> = { pending: 1, completed: 2 };
         return asc
           ? order[a.taskStatus] - order[b.taskStatus]
           : order[b.taskStatus] - order[a.taskStatus];
@@ -120,10 +136,7 @@ export default function TasksPage() {
 
   return (
     <>
-      <Header
-        userName="Iheb"
-        profileImage="https://i.pravatar.cc/150?img=3"
-      />
+      <Header userName="Iheb" profileImage="https://i.pravatar.cc/150?img=3" />
 
       <div className="container">
         <DashboardHeader name="Aqeel" />
@@ -134,39 +147,33 @@ export default function TasksPage() {
           onCancelEdit={cancelEdit}
         />
 
- <div className={styles.controls}>
-  
+        <div className={styles.controls}>
+          <div className={styles.sortBtnsContainer}>
+            <button
+              onClick={() => handleSortByCategory(!categoryAsc)}
+              className={styles.smallBtn}
+            >
+              By Category {categoryAsc ? "▲" : "▼"}
+            </button>
 
-    <div className={styles.sortBtnsContainer}>
-      <button
-        onClick={() => handleSortByCategory(!categoryAsc)}
-        className={styles.smallBtn}
-      >
-        By Category {categoryAsc ? "▲" : "▼"}
-      </button>
+            <button
+              onClick={() => handleSortByPriority(!priorityAsc)}
+              className={styles.smallBtn}
+            >
+              By Priority {priorityAsc ? "▲" : "▼"}
+            </button>
 
-      <button
-        onClick={() => handleSortByPriority(!priorityAsc)}
-        className={styles.smallBtn}
-      >
-        By Priority {priorityAsc ? "▲" : "▼"}
-      </button>
-      <div className={styles.rightGroup}>
-    <input
-      type="text"
-      placeholder="Search by title..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className={styles.searchInput}
-    />
-    </div>
-  </div>
-</div>
-
-
-
-
-
+            <div className={styles.rightGroup}>
+              <input
+                type="text"
+                placeholder="Search by title..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+          </div>
+        </div>
 
         <div className={styles.mainGrid}>
           {/* Calendrier à gauche */}
